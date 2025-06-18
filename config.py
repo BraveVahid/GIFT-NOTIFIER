@@ -1,0 +1,6 @@
+API_ID = 0
+API_HASH = ""
+BOT_TOKEN = ""
+
+ADMIN_ID = 0
+ADMIN_USERNAME = ""
