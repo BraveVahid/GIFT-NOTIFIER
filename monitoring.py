@@ -1,16 +1,19 @@
 from config import ADMIN_ID
 from database import DBManager
 import asyncio
-from sender import SmsSender
+from sender import Sender
 
 database = DBManager()
+
 
 class Monitoring:
     @staticmethod
     async def detector(client):
         try:
-            current_gifts = [gift.id for gift in await client.get_available_gifts() if
+            available_gifts = await client.get_available_gifts()
+            current_gifts = [gift.id for gift in available_gifts if
                              gift.is_limited and not gift.is_sold_out]
+
             last_gift_list = database.get_all_gifts()
 
             new_gifts = []
@@ -24,6 +27,7 @@ class Monitoring:
                 return new_gifts
             return []
         except Exception as e:
+            print(f"Error in detector: {e}")
             return []
 
     @staticmethod
@@ -34,26 +38,32 @@ class Monitoring:
                 if gift.is_limited and not gift.is_sold_out:
                     database.add_gift(gift.id)
         except Exception as e:
-            pass
+            print(f"Error in initialize: {e}")
 
     @staticmethod
-    async def start_monitoring(app):
+    async def start_monitoring(client):
         iteration_count = 0
         while True:
             iteration_count += 1
             if iteration_count == 120:
-                await app.send_message(text="Checking for gifts...", chat_id=ADMIN_ID)
+                try:
+                    await client.send_message(text="Checking for gifts...", chat_id=ADMIN_ID)
+                except:
+                    pass
                 iteration_count = 0
+
             try:
-                new_gifts = await Monitoring.detector(app)
+                new_gifts = await Monitoring.detector(client)
 
                 if new_gifts:
                     for gift_id in new_gifts:
                         try:
-                            await SmsSender.send_sms(f"New gift available: {gift_id}", app)
+                            await Sender.send_sms(f"🎁 New gift available: {gift_id}", client)
+                            await Sender.send_telegram_message(f"🎁 New gift available: {gift_id}", client)
                         except Exception as e:
-                            pass
-                await asyncio.sleep(30)
+                            print(f"Error sending SMS for gift {gift_id}: {e}")
 
             except Exception as e:
-                await asyncio.sleep(30)
+                print(f"Error in monitoring loop: {e}")
+
+            await asyncio.sleep(30)

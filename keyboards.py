@@ -12,32 +12,33 @@ KEYBOARDS = {
         [InlineKeyboardButton(text="❌", callback_data="cancel")]
     ]),
     "select_subscription_count": InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("تعداد"),
-            InlineKeyboardButton("قیمت با تخفیف"),
-            InlineKeyboardButton("مقدار تخفیف")
-        ],
-        [
-            InlineKeyboardButton("1", callback_data="sub_1"),
-            InlineKeyboardButton("30 stars", callback_data="sub_1"),
-            InlineKeyboardButton("تخفیف ندارد", callback_data="sub_1")
-        ],
-        [
-            InlineKeyboardButton("5", callback_data="sub_5"),
-            InlineKeyboardButton("150 stars", callback_data="sub_5"),
-            InlineKeyboardButton("تخفیف ندارد", callback_data="sub_5")
-        ],
-        [
-            InlineKeyboardButton("7", callback_data="sub_7"),
-            InlineKeyboardButton("210 stars", callback_data="sub_7"),
-            InlineKeyboardButton("تخفیف ندارد", callback_data="sub_7")
-        ],
-        [
-            InlineKeyboardButton("⭐ 10", callback_data="sub_10"),
-            InlineKeyboardButton("~~300~~ 270 stars", callback_data="sub_10"),
-            InlineKeyboardButton("10 درصد تخفیف", callback_data="sub_10")
-        ]
-    ]),
+    [
+        InlineKeyboardButton("تعداد", callback_data="ignore"),
+        InlineKeyboardButton("قیمت با تخفیف", callback_data="ignore"),
+        InlineKeyboardButton("مقدار تخفیف", callback_data="ignore")
+    ],
+    [
+        InlineKeyboardButton("1", callback_data="sub_1"),
+        InlineKeyboardButton("30 stars", callback_data="sub_1"),
+        InlineKeyboardButton("تخفیف ندارد", callback_data="sub_1")
+    ],
+    [
+        InlineKeyboardButton("5", callback_data="sub_5"),
+        InlineKeyboardButton("150 stars", callback_data="sub_5"),
+        InlineKeyboardButton("تخفیف ندارد", callback_data="sub_5")
+    ],
+    [
+        InlineKeyboardButton("7", callback_data="sub_7"),
+        InlineKeyboardButton("210 stars", callback_data="sub_7"),
+        InlineKeyboardButton("تخفیف ندارد", callback_data="sub_7")
+    ],
+    [
+        InlineKeyboardButton("⭐ 10", callback_data="sub_10"),
+        InlineKeyboardButton("~~300~~ 270 stars", callback_data="sub_10"),
+        InlineKeyboardButton("10 درصد تخفیف", callback_data="sub_10")
+    ]
+]),
+
     "pay": InlineKeyboardMarkup([
         [
             InlineKeyboardButton("💰 پرداخت", pay=True)
