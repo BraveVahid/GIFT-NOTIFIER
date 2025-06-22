@@ -2,7 +2,7 @@ from pyrogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyb
 
 KEYBOARDS = {
     "start_inline": InlineKeyboardMarkup([
-        [InlineKeyboardButton(text="🧑🏻‍💻 Developer", url="https://t.me/BraveVahid")]
+        [InlineKeyboardButton(text="➕ افزودن به گروه", url="https://t.me/gift_notifier_robot?startgroup=new")]
     ]),
     "start_reply": ReplyKeyboardMarkup([
         ["🛒 تهیه اشتراک", "👤 پشتیبانی"],
@@ -38,10 +38,12 @@ KEYBOARDS = {
         InlineKeyboardButton("10 درصد تخفیف", callback_data="sub_10")
     ]
 ]),
-
     "pay": InlineKeyboardMarkup([
         [
             InlineKeyboardButton("💰 پرداخت", pay=True)
+        ],
+        [
+            InlineKeyboardButton(text="❌", callback_data="cancel_pay")
         ]
     ])
 }

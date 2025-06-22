@@ -1,5 +1,5 @@
 from pyrogram import Client
-from pyrogram.types import Message, CallbackQuery
+from pyrogram.types import Message, CallbackQuery, LabeledPrice
 from clock import IranClock
 from pyrogram.filters import regex, private, command, successful_payment, group
 from config import ADMIN_USERNAME, ADMIN_ID
@@ -116,9 +116,7 @@ async def successful_payment_handler(client: Client, message):
 
         if user_id in data:
             token, sender, receptor = data[user_id]
-            success = database.add_user(user_id, receptor, sender, token, sub_type)
-
-            if success:
+            if database.add_user(user_id, receptor, sender, token, sub_type):
                 await message.reply("✅")
                 await message.reply(
                     text=get_text("payment_success").format(sub_type),
@@ -143,10 +141,11 @@ async def pre_checkout_handler(_, pre_checkout_query):
 
 
 @bot.on_callback_query(at_state("CODE_SNIPPET") & regex("cancel"))
-async def cancel(_, callback_query: CallbackQuery):
-    await callback_query.answer(
-        get_text("cancel"),
-        show_alert=True
+async def cancel(client: Client, callback_query: CallbackQuery):
+    await client.send_message(
+        text=get_text("cancel"),
+        chat_id=callback_query.from_user.id,
+        reply_to_message_id=callback_query.message.reply_to_message_id
     )
     await callback_query.message.delete()
     del_state(callback_query)
@@ -155,7 +154,7 @@ async def cancel(_, callback_query: CallbackQuery):
 @bot.on_callback_query(regex(r"sub_(1|5|7|10)"))
 async def receive_subscription_count(client: Client, callback: CallbackQuery):
     user_id = callback.from_user.id
-    callback_data = callback.data
+    callback_data = callback.data.split("_")[1]
 
     prices = {
         "sub_1": 30,
@@ -164,28 +163,41 @@ async def receive_subscription_count(client: Client, callback: CallbackQuery):
         "sub_10": 270
     }
 
-    descriptions = {
-        "sub_1": "اشتراک برای 1 بار",
-        "sub_5": "اشتراک برای 5 بار",
-        "sub_7": "اشتراک برای 7 بار",
-        "sub_10": "اشتراک برای 10 بار"
-    }
+    token, sender, receptor = data[user_id]
 
     try:
         await callback.message.delete()
+
+        price_list = [LabeledPrice(
+            label="Subscription",
+            amount=1
+        )]
+
         await client.send_invoice(
             chat_id=user_id,
-            title="خرید اشتراک",
-            description=descriptions[callback_data],
+            title=f"اشتراک {callback_data} تایی",
+            description=get_text("description").format(receptor, sender, callback_data, token, callback_data),
             payload=f"subscription_{callback_data}",
             provider_token="284685532:TEST:M2JkZDMwZjk5NWJl",
             currency="XTR",
-            prices=[{"label": "Subscription", "amount": 1}],
-            reply_markup=get_keyboard("pay")
+            prices=price_list,
+            reply_markup=get_keyboard("pay"),
+            reply_to_message_id=callback.message.reply_to_message_id
         )
         await callback.answer("در حال ایجاد صورتحساب...")
     except Exception as e:
         await callback.answer("خطا در ایجاد صورتحساب!", show_alert=True)
+        print(f"Error creating invoice: {e}")
+
+
+@bot.on_message(regex(r"cancel_pay"))
+async def cancel_pay(client: Client, callback_query: CallbackQuery):
+    await callback_query.message.delete()
+    await client.send_message(
+        text=get_text("cancel"),
+        reply_to_message_id=callback_query.message.reply_to_message_id,
+        chat_id=callback_query.from_user.id
+    )
 
 
 @bot.on_message(group)
