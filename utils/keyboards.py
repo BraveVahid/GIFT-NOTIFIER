@@ -9,7 +9,7 @@ KEYBOARDS = {
         ["ℹ️ اطلاعات کاربر", "💡 راهنما"]
     ], resize_keyboard=True),
     "cancel": InlineKeyboardMarkup([
-        [InlineKeyboardButton(text="❌", callback_data="cancel")]
+        [InlineKeyboardButton(text="❌ لغو", callback_data="cancel")]
     ]),
     "select_subscription_count": InlineKeyboardMarkup([
     [
@@ -34,7 +34,7 @@ KEYBOARDS = {
     ],
     [
         InlineKeyboardButton("⭐ 10", callback_data="sub_10"),
-        InlineKeyboardButton("~~300~~ 270 stars", callback_data="sub_10"),
+        InlineKeyboardButton("270 stars", callback_data="sub_10"),
         InlineKeyboardButton("10 درصد تخفیف", callback_data="sub_10")
     ]
 ]),
@@ -43,7 +43,7 @@ KEYBOARDS = {
             InlineKeyboardButton("💰 پرداخت", pay=True)
         ],
         [
-            InlineKeyboardButton(text="❌", callback_data="cancel_pay")
+            InlineKeyboardButton(text="❌ لغو", callback_data="cancel_pay")
         ]
     ])
 }

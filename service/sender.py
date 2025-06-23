@@ -1,7 +1,7 @@
 from kavenegar import KavenegarAPI
 from database import DBManager
 from config import ADMIN_ID
-from texts import get_text
+from utils.texts import get_text
 
 database = DBManager()
 
